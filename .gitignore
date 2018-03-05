@@ -1,0 +1,5 @@
+/SPECS/maui.spec
+/SPECS/torque.spec
+.*.ok
+*.rpm
+*.tar.gz

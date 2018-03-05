@@ -1,0 +1,70 @@
+%define name     maui
+%define version  @VERSION@
+%define spooldir /var/spool/%{name}
+
+Name:    %{name}
+Version: %{version}
+Release: 1%{?dist}
+Summary: Maui batch scheduler
+
+License: End User Open Source
+Source0: %{name}-%{version}.tar.gz
+Patch0:  maui-destdir.patch
+
+%description
+Maui batch scheduler.
+
+%prep
+%autosetup
+
+%build
+%configure --with-prefix=%{_prefix} --with-pbs=%{_prefix} --with-spooldir=%{spooldir}
+make %{?_smp_mflags}
+
+%install
+%make_install
+
+mkdir -p %{buildroot}%{_libdir}
+mv %{buildroot}/usr/lib/libmcom.a %{buildroot}%{_libdir}/
+mv %{buildroot}/usr/lib/libmoab.a %{buildroot}%{_libdir}/
+
+%files
+%{_bindir}/canceljob
+%{_bindir}/changeparam
+%{_bindir}/checkjob
+%{_bindir}/checknode
+%{_bindir}/diagnose
+%{_bindir}/mbal
+%{_bindir}/mclient
+%{_bindir}/mdiag
+%{_bindir}/mjobctl
+%{_bindir}/mnodectl
+%{_bindir}/mprof
+%{_bindir}/mschedctl
+%{_bindir}/mstat
+%{_bindir}/releasehold
+%{_bindir}/releaseres
+%{_bindir}/resetstats
+%{_bindir}/runjob
+%{_bindir}/schedctl
+%{_bindir}/sethold
+%{_bindir}/setqos
+%{_bindir}/setres
+%{_bindir}/setspri
+%{_bindir}/showbf
+%{_bindir}/showconfig
+%{_bindir}/showgrid
+%{_bindir}/showhold
+%{_bindir}/showq
+%{_bindir}/showres
+%{_bindir}/showstart
+%{_bindir}/showstate
+%{_bindir}/showstats
+%{_includedir}/moab.h
+%{_libdir}/libmcom.a
+%{_libdir}/libmoab.a
+%{_sbindir}/maui
+%config(noreplace) %{_var}/spool/maui/maui-private.cfg
+%config(noreplace) %{_var}/spool/maui/maui.cfg
+
+%changelog
