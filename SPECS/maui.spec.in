@@ -1,21 +1,49 @@
 %define name     maui
 %define version  @VERSION@
-%define spooldir /var/spool/%{name}
+%define spooldir %{_localstatedir}/spool/%{name}
 
 Name:    %{name}
 Version: %{version}
 Release: 1%{?dist}
 Summary: Maui batch scheduler
 
-License: End User Open Source
+License: moab
 Source0: %{name}-%{version}.tar.gz
+Source1: maui.service.in
 Patch0:  maui-destdir.patch
+Patch1:  maui-ncpu.patch
+
+BuildRequires: torque torque-devel
+
+%package client
+Summary: Client programs for Maui batch scheduler
+Requires: %{name}
+
+%package server
+Summary: Server program for Maui batch scheduler
+Requires: %{name}
+BuildRequires: systemd
+%{?systemd_requires}
+
+%package devel
+Summary: Development files for Maui batch scheduler
+Requires: %{name}
 
 %description
 Maui batch scheduler.
 
+%description client
+Client programs for Maui batch scheduler.
+
+%description server
+Server program for Maui batch scheduler.
+
+%description devel
+Development libraries and header for Maui batch scheduler.
+
 %prep
-%autosetup
+%autosetup -p 0
+cp %{SOURCE1} .
 
 %build
 %configure --with-prefix=%{_prefix} --with-pbs=%{_prefix} --with-spooldir=%{spooldir}
@@ -28,7 +56,18 @@ mkdir -p %{buildroot}%{_libdir}
 mv %{buildroot}/usr/lib/libmcom.a %{buildroot}%{_libdir}/
 mv %{buildroot}/usr/lib/libmoab.a %{buildroot}%{_libdir}/
 
+mkdir -p %{buildroot}%{_unitdir}
+sed -e 's|@SBINDIR@|%{_sbindir}|g'  \
+    -e 's|@SPOOLDIR@|%{spooldir}|g' \
+    %{_sourcedir}/maui.service.in > %{buildroot}%{_unitdir}/maui.service
+
 %files
+%license LICENSE
+%license LICENSE.mcompat
+%config(noreplace) %{_localstatedir}/spool/maui/maui-private.cfg
+%config(noreplace) %{_localstatedir}/spool/maui/maui.cfg
+
+%files client
 %{_bindir}/canceljob
 %{_bindir}/changeparam
 %{_bindir}/checkjob
@@ -60,11 +99,14 @@ mv %{buildroot}/usr/lib/libmoab.a %{buildroot}%{_libdir}/
 %{_bindir}/showstart
 %{_bindir}/showstate
 %{_bindir}/showstats
+
+%files server
+%{_sbindir}/maui
+%{_unitdir}/maui.service
+
+%files devel
 %{_includedir}/moab.h
 %{_libdir}/libmcom.a
 %{_libdir}/libmoab.a
-%{_sbindir}/maui
-%config(noreplace) %{_var}/spool/maui/maui-private.cfg
-%config(noreplace) %{_var}/spool/maui/maui.cfg
 
 %changelog

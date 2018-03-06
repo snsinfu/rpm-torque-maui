@@ -1,0 +1,12 @@
+[Unit]
+Description=Maui scheduler daemon
+Requires=network.target
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=@SPOOLDIR@/maui.pid
+ExecStart=@SBINDIR@/maui -H @SPOOLDIR@
+
+[Install]
+WantedBy=multi-user.target
