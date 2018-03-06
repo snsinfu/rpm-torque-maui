@@ -1,0 +1,33 @@
+--- include/msched.h	2011-03-05 01:28:26.000000000 +0900
++++ include/msched.h	2018-03-06 20:53:02.000000000 +0900
+@@ -1934,7 +1934,7 @@
+   mnalloc_t *NodeList;
+   } mreq_t;
+ 
+-#define MMAX_JOBRA  16
++#define MMAX_JOBRA  128
+ 
+ typedef struct {
+   char  *IWD;                /* initial working directory of job             */
+--- src/moab/MJob.c	2011-03-05 01:28:24.000000000 +0900
++++ src/moab/MJob.c	2018-03-06 20:53:30.000000000 +0900
+@@ -4670,7 +4670,7 @@
+     return(FAILURE);
+     }
+ 
+-  for (rindex = 0;rindex < 16;rindex++)
++  for (rindex = 0;rindex < MMAX_JOBRA;rindex++)
+     {
+     if (J->RAList[rindex][0] == '\0')
+       {
+--- src/moab/MNode.c	2011-03-05 01:28:24.000000000 +0900
++++ src/moab/MNode.c	2018-03-06 20:53:47.000000000 +0900
+@@ -1192,7 +1192,7 @@
+ 
+   int      RATail;
+   
+-#define MAX_MPJOB 16
++#define MAX_MPJOB 128
+ 
+   mjob_t  *tmpJ[MAX_MPJOB];
+ 
