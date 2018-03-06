@@ -19,7 +19,7 @@ all: .torque.ok .maui.ok
 	docker run --rm -it -v "$${PWD}:/home/builder/rpmbuild"               \
 	           rpmbuild-torque -D "_builddir     /tmp/rpmbuild/BUILD"     \
 	                           -D "_buildrootdir /tmp/rpmbuild/BUILDROOT" \
-	                           -bb SPECS/torque.spec
+	                           -ba SPECS/torque.spec
 	touch "$@"
 
 .maui.ok: SOURCES/$(MAUI_DISTFILE) \
@@ -28,7 +28,7 @@ all: .torque.ok .maui.ok
 	docker run --rm -it -v "$${PWD}:/home/builder/rpmbuild"             \
 	           rpmbuild-maui -D "_builddir     /tmp/rpmbuild/BUILD"     \
 	                         -D "_buildrootdir /tmp/rpmbuild/BUILDROOT" \
-	                         -bb SPECS/maui.spec
+	                         -ba SPECS/maui.spec
 	touch "$@"
 
 .rpmbuild-torque.ok: rpmbuild-torque/Dockerfile
