@@ -5,7 +5,8 @@
 Name:    %{name}
 Version: %{version}
 Release: 1%{?dist}
-Summary: Maui batch scheduler
+Summary: Reservation based HPC batch scheduler
+Url:     http://www.adaptivecomputing.com/products/open-source/maui/
 
 License: moab
 Source0: %{name}-%{version}.tar.gz
@@ -59,7 +60,7 @@ mv %{buildroot}/usr/lib/libmoab.a %{buildroot}%{_libdir}/
 mkdir -p %{buildroot}%{_unitdir}
 sed -e 's|@SBINDIR@|%{_sbindir}|g'  \
     -e 's|@SPOOLDIR@|%{spooldir}|g' \
-    %{_sourcedir}/maui.service.in > %{buildroot}%{_unitdir}/maui.service
+    maui.service.in > %{buildroot}%{_unitdir}/maui.service
 
 %files
 %license LICENSE
@@ -110,3 +111,5 @@ sed -e 's|@SBINDIR@|%{_sbindir}|g'  \
 %{_libdir}/libmoab.a
 
 %changelog
+* Tue Mar  6 2018 snsinfu 3.3.1
+- Initial packaging
