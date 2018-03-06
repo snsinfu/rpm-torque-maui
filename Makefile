@@ -1,6 +1,9 @@
 TORQUE_VERSION = 6.1.2
 MAUI_VERSION = 3.3.1
 
+TORQUE_PREFIX = /opt/torque
+MAUI_PREFIX = /opt/maui
+
 ARCH = x86_64
 TORQUE_DIST = torque-$(TORQUE_VERSION)
 MAUI_DIST = maui-$(MAUI_VERSION)
@@ -19,6 +22,7 @@ all: .torque.ok .maui.ok
 	docker run --rm -it -v "$${PWD}:/home/builder/rpmbuild"               \
 	           rpmbuild-torque -D "_builddir     /tmp/rpmbuild/BUILD"     \
 	                           -D "_buildrootdir /tmp/rpmbuild/BUILDROOT" \
+	                           -D "_prefix       $(TORQUE_PREFIX)"        \
 	                           -ba SPECS/torque.spec
 	touch "$@"
 
@@ -28,6 +32,7 @@ all: .torque.ok .maui.ok
 	docker run --rm -it -v "$${PWD}:/home/builder/rpmbuild"             \
 	           rpmbuild-maui -D "_builddir     /tmp/rpmbuild/BUILD"     \
 	                         -D "_buildrootdir /tmp/rpmbuild/BUILDROOT" \
+	                         -D "_prefix       $(MAUI_PREFIX)"          \
 	                         -ba SPECS/maui.spec
 	touch "$@"
 
@@ -58,4 +63,6 @@ SPECS/torque.spec: SOURCES/$(TORQUE_DISTFILE)
 	tar -Oxzf "$<" "$(TORQUE_DIST)/torque.spec" > "$@"
 
 SPECS/maui.spec: SPECS/maui.spec.in
-	sed "s/@VERSION@/$(MAUI_VERSION)/" "$<" > "$@"
+	sed -e "s|@VERSION@|$(MAUI_VERSION)|"        \
+	    -e "s|@TORQUE_PREFIX@|$(TORQUE_PREFIX)|" \
+	    "$<" > "$@"

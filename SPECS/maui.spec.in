@@ -47,15 +47,15 @@ Development libraries and header for Maui batch scheduler.
 cp %{SOURCE1} .
 
 %build
-%configure --with-prefix=%{_prefix} --with-pbs=%{_prefix} --with-spooldir=%{spooldir}
+%configure --with-prefix=%{_prefix} --with-pbs=@TORQUE_PREFIX@ --with-spooldir=%{spooldir}
 make %{?_smp_mflags}
 
 %install
 %make_install
 
 mkdir -p %{buildroot}%{_libdir}
-mv %{buildroot}/usr/lib/libmcom.a %{buildroot}%{_libdir}/
-mv %{buildroot}/usr/lib/libmoab.a %{buildroot}%{_libdir}/
+mv %{buildroot}%{_prefix}/lib/libmcom.a %{buildroot}%{_libdir}/
+mv %{buildroot}%{_prefix}/lib/libmoab.a %{buildroot}%{_libdir}/
 
 mkdir -p %{buildroot}%{_unitdir}
 sed -e 's|@SBINDIR@|%{_sbindir}|g'  \
